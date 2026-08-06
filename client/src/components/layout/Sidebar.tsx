@@ -93,7 +93,7 @@ export default function Sidebar() {
           </p>
 
           <p className="text-slate-400 text-sm mt-1">
-            Built with ❤️ using Next.js
+            Built with ❤️ 
           </p>
         </div>
       </div>

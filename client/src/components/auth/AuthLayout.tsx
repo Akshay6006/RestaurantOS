@@ -6,7 +6,7 @@ import Logo from "./Logo";
 import {
   BarChart3,
   ChefHat,
-  DollarSign,
+  IndianRupee,
   Sparkles,
 } from "lucide-react";
 
@@ -112,10 +112,10 @@ export default function AuthLayout({
             <div className="space-y-4">
 
               <PreviewCard
-                icon={<DollarSign />}
-                title="Today's Revenue"
-                value="$4,825"
-              />
+  icon={<IndianRupee />}
+  title="Today's Revenue"
+  value="₹4,825"
+/>
 
               <PreviewCard
                 icon={<ChefHat />}
