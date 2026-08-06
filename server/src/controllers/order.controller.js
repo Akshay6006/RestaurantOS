@@ -16,10 +16,16 @@ const generateInvoiceNumber = () => {
 export const createOrder = async (req, res) => {
   try {
     const {
-      customerName,
-      tableNumber,
-      items,
-    } = req.body;
+  customerName,
+  customerPhone,
+  tableNumber,
+  orderType,
+  items,
+  paymentMethod,
+  paymentStatus,
+  gst,
+  discount,
+} = req.body;
 
     if (
       !customerName ||
@@ -59,24 +65,68 @@ export const createOrder = async (req, res) => {
       });
     }
 
-    const order = await prisma.order.create({
-      data: {
-        customerName,
-        tableNumber: Number(tableNumber),
-        totalAmount,
+    const subtotal = totalAmount;
 
-        items: {
-          create: orderItems,
-        },
-      },
+const discountPercent = Number(req.body.discount || 0);
+const discountAmount = (subtotal * discountPercent) / 100;
+
+const gstPercent = Number(req.body.gst || 9);
+const gstAmount =
+  ((subtotal - discountAmount) * gstPercent) / 100;
+
+const grandTotal =
+  subtotal - discountAmount + gstAmount;
+console.log("Request Body:", req.body);
+
+console.log({
+  subtotal,
+  discountPercent,
+  discountAmount,
+  gstPercent,
+  gstAmount,
+  grandTotal,
+  paymentMethod,
+  paymentStatus,
+});
+const order = await prisma.order.create({
+  data: {
+    invoiceNumber: generateInvoiceNumber(),
+
+    customerName,
+    customerPhone,
+
+    tableNumber: Number(tableNumber),
+
+    orderType,
+
+    subtotal,
+
+    discountPercent,
+    discountAmount,
+
+    gstPercent,
+    gstAmount,
+
+    totalAmount: grandTotal,
+
+    paymentMethod,
+    paymentStatus,
+
+    status: "PENDING",
+
+    items: {
+      create: orderItems,
+    },
+  },
+
+  include: {
+    items: {
       include: {
-        items: {
-          include: {
-            menu: true,
-          },
-        },
+        menu: true,
       },
-    });
+    },
+  },
+});
 
     return res.status(201).json({
       success: true,

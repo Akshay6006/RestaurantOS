@@ -8,16 +8,15 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role     @default(OWNER)
+  id               String    @id @default(uuid())
+  name             String
+  email            String    @unique
+  password         String
+  role             Role      @default(OWNER)
   resetToken       String?
   resetTokenExpiry DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }
 
 model Menu {
@@ -34,14 +33,39 @@ model Menu {
 }
 
 model Order {
-  id           String      @id @default(uuid())
-  customerName String
-  tableNumber  Int
-  totalAmount  Float
-  status       OrderStatus @default(PENDING)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  items        OrderItem[]
+  id String @id @default(uuid())
+
+  invoiceNumber String @unique
+
+  customerName  String
+  customerPhone String?
+
+  tableNumber Int
+
+  orderType String @default("DINE_IN")
+
+  subtotal Float
+
+  discountPercent Float @default(0)
+  discountAmount  Float @default(0)
+
+  gstPercent Float @default(9)
+  gstAmount  Float @default(0)
+
+  totalAmount Float
+
+  paymentMethod String?
+
+  paymentStatus String @default("PENDING")
+
+  status OrderStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items OrderItem[]
+
+  feedback Feedback?
 }
 
 model OrderItem {
@@ -55,8 +79,27 @@ model OrderItem {
   order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
+model Feedback {
+  id String @id @default(uuid())
+
+  customerName  String
+  customerPhone String?
+
+  rating  Int
+  message String
+
+  image String?
+
+  orderId String @unique
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Inventory {
-  id                String   @id @default(uuid())
+  id                String  @id @default(uuid())
   name              String
   category          String
   quantity          Float
@@ -64,7 +107,22 @@ model Inventory {
   purchasePrice     Float
   supplier          String?
   warehouse         String?
-  lowStockThreshold Float    @default(10)
+  lowStockThreshold Float   @default(10)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Expense {
+  id            String   @id @default(uuid())
+  title         String
+  category      String
+  amount        Float
+  paymentMethod String
+  vendor        String?
+  expenseDate   DateTime
+  notes         String?
+  billImage     String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -85,4 +143,81 @@ enum OrderStatus {
   READY
   SERVED
   CANCELLED
+}
+
+model Staff {
+  id String @id @default(cuid())
+
+  employeeId String @unique
+
+  fullName String
+  photo    String?
+
+  gender      String
+  dateOfBirth DateTime?
+
+  phone String
+  email String? @unique
+
+  address String?
+
+  role       String
+  department String
+
+  employmentType String
+
+  shift String
+
+  salary Float
+
+  joiningDate DateTime
+
+  emergencyContactName  String?
+  emergencyRelationship String?
+  emergencyPhone        String?
+
+  attendances Attendance[]
+  leaves      Leave[]
+
+  status String @default("Active")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Attendance {
+  id       String   @id @default(cuid())
+  staffId  String
+  date     DateTime
+  status   String
+  checkIn  String?
+  checkOut String?
+  remarks  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  staff Staff @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@unique([staffId, date])
+}
+
+model Leave {
+  id String @id @default(cuid())
+
+  staffId String
+
+  leaveType String
+
+  startDate DateTime
+  endDate   DateTime
+
+  reason String
+
+  status String @default("Pending")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  staff Staff @relation(fields: [staffId], references: [id], onDelete: Cascade)
 }

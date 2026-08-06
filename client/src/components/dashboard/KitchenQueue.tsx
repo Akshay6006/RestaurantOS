@@ -3,46 +3,35 @@
 import { motion } from "framer-motion";
 import { ChefHat, Clock } from "lucide-react";
 
-const kitchenOrders = [
-  {
-    id: "#ORD-1001",
-    table: "Table 2",
-    customer: "Rahul Sharma",
-    status: "Preparing",
-    time: "8 min",
-  },
-  {
-    id: "#ORD-1002",
-    table: "Table 5",
-    customer: "Priya Singh",
-    status: "Cooking",
-    time: "5 min",
-  },
-  {
-    id: "#ORD-1003",
-    table: "Take Away",
-    customer: "Amit Kumar",
-    status: "Ready",
-    time: "12 min",
-  },
-  {
-    id: "#ORD-1004",
-    table: "Table 8",
-    customer: "Neha Patel",
-    status: "Pending",
-    time: "2 min",
-  },
-];
+interface KitchenOrder {
+  id: string;
+  tableNumber: number;
+  customerName: string;
+  status: string;
+  createdAt: string;
+
+  items: {
+    quantity: number;
+
+    menu: {
+      name: string;
+    };
+  }[];
+}
+
+interface KitchenQueueProps {
+  data: KitchenOrder[];
+}
 
 const statusColor = (status: string) => {
   switch (status) {
-    case "Ready":
+    case "READY":
       return "bg-emerald-500/20 text-emerald-400";
 
-    case "Preparing":
+    case "PREPARING":
       return "bg-blue-500/20 text-blue-400";
 
-    case "Cooking":
+    case "PENDING":
       return "bg-orange-500/20 text-orange-400";
 
     default:
@@ -50,7 +39,10 @@ const statusColor = (status: string) => {
   }
 };
 
-export default function KitchenQueue() {
+export default function KitchenQueue({
+  data,
+}: KitchenQueueProps) {
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 25 }}
@@ -76,7 +68,7 @@ export default function KitchenQueue() {
 
       <div className="space-y-4">
 
-        {kitchenOrders.map((order) => (
+        {data.map((order) => (
           <div
             key={order.id}
             className="rounded-2xl border border-slate-800 bg-slate-800/40 p-4 transition hover:border-emerald-500"
@@ -86,16 +78,20 @@ export default function KitchenQueue() {
               <div>
 
                 <h3 className="font-semibold text-white">
-                  {order.table}
+                 Table #{order.tableNumber}
                 </h3>
 
                 <p className="text-sm text-slate-400">
-                  {order.customer}
+                 {order.customerName}
                 </p>
 
                 <p className="mt-1 text-xs text-slate-500">
-                  {order.id}
-                </p>
+  {order.items.length} item(s)
+</p>
+
+<p className="mt-2 text-xs text-slate-400">
+  {order.items.map((item) => item.menu.name).join(", ")}
+</p>
 
               </div>
 
@@ -111,7 +107,12 @@ export default function KitchenQueue() {
 
                 <div className="mt-2 flex items-center justify-end gap-1 text-slate-400">
                   <Clock size={15} />
-                  <span className="text-sm">{order.time}</span>
+                  <span className="text-sm">
+  {new Date(order.createdAt).toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}
+</span>
                 </div>
 
               </div>

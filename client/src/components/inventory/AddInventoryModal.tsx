@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { X, PackagePlus } from "lucide-react";
 import { InventoryFormData } from "@/types/inventory";
 
 interface Props {
@@ -37,7 +38,7 @@ export default function AddInventoryModal({
   if (!open) return null;
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const { name, value } = e.target;
 
@@ -51,6 +52,9 @@ export default function AddInventoryModal({
           : value,
     }));
   };
+
+  const inputClass =
+    "w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-white placeholder:text-slate-400 outline-none transition focus:border-emerald-500";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,24 +70,48 @@ export default function AddInventoryModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-5">
 
-      <div className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl">
+      <div className="w-full max-w-4xl rounded-3xl border border-slate-800 bg-slate-900 shadow-2xl">
 
-        <div className="border-b px-6 py-4">
-          <h2 className="text-2xl font-bold">
-            Add Inventory Item
-          </h2>
+        <div className="flex items-center justify-between border-b border-slate-800 p-6">
+
+          <div className="flex items-center gap-3">
+
+            <PackagePlus className="text-emerald-400" />
+
+            <div>
+
+              <h2 className="text-3xl font-bold text-white">
+                Add New Product
+              </h2>
+
+              <p className="mt-1 text-slate-400">
+                Add a new inventory item manually.
+              </p>
+
+            </div>
+
+          </div>
+
+          <button
+            onClick={onClose}
+            className="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white"
+          >
+            <X size={22} />
+          </button>
+
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="p-6 space-y-5"
+          className="space-y-8 p-6"
         >
-          <div className="grid md:grid-cols-2 gap-5">
+
+          <div className="grid gap-6 md:grid-cols-2">
 
             <div>
-              <label className="block mb-2 font-medium">
+              <label className="mb-2 block text-sm font-medium text-slate-300">
                 Product Name
               </label>
 
@@ -92,12 +120,13 @@ export default function AddInventoryModal({
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                className="w-full rounded-lg border px-4 py-3"
+                className={inputClass}
+                placeholder="Rice"
               />
             </div>
 
             <div>
-              <label className="block mb-2 font-medium">
+              <label className="mb-2 block text-sm font-medium text-slate-300">
                 Category
               </label>
 
@@ -106,12 +135,13 @@ export default function AddInventoryModal({
                 name="category"
                 value={form.category}
                 onChange={handleChange}
-                className="w-full rounded-lg border px-4 py-3"
+                className={inputClass}
+                placeholder="Grains"
               />
             </div>
 
             <div>
-              <label className="block mb-2 font-medium">
+              <label className="mb-2 block text-sm font-medium text-slate-300">
                 Quantity
               </label>
 
@@ -121,12 +151,12 @@ export default function AddInventoryModal({
                 name="quantity"
                 value={form.quantity}
                 onChange={handleChange}
-                className="w-full rounded-lg border px-4 py-3"
+                className={inputClass}
               />
             </div>
 
             <div>
-              <label className="block mb-2 font-medium">
+              <label className="mb-2 block text-sm font-medium text-slate-300">
                 Unit
               </label>
 
@@ -135,13 +165,13 @@ export default function AddInventoryModal({
                 name="unit"
                 value={form.unit}
                 onChange={handleChange}
-                placeholder="Kg, Litre, Piece..."
-                className="w-full rounded-lg border px-4 py-3"
+                className={inputClass}
+                placeholder="Kg / Litre / Piece"
               />
             </div>
 
             <div>
-              <label className="block mb-2 font-medium">
+              <label className="mb-2 block text-sm font-medium text-slate-300">
                 Purchase Price
               </label>
 
@@ -151,39 +181,13 @@ export default function AddInventoryModal({
                 name="purchasePrice"
                 value={form.purchasePrice}
                 onChange={handleChange}
-                className="w-full rounded-lg border px-4 py-3"
+                className={inputClass}
               />
             </div>
 
             <div>
-              <label className="block mb-2 font-medium">
-                Supplier
-              </label>
-
-              <input
-                name="supplier"
-                value={form.supplier}
-                onChange={handleChange}
-                className="w-full rounded-lg border px-4 py-3"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-2 font-medium">
-                Warehouse
-              </label>
-
-              <input
-                name="warehouse"
-                value={form.warehouse}
-                onChange={handleChange}
-                className="w-full rounded-lg border px-4 py-3"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-2 font-medium">
-                Low Stock Threshold
+              <label className="mb-2 block text-sm font-medium text-slate-300">
+                Low Stock Alert
               </label>
 
               <input
@@ -192,18 +196,46 @@ export default function AddInventoryModal({
                 name="lowStockThreshold"
                 value={form.lowStockThreshold}
                 onChange={handleChange}
-                className="w-full rounded-lg border px-4 py-3"
+                className={inputClass}
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-300">
+                Supplier
+              </label>
+
+              <input
+                name="supplier"
+                value={form.supplier}
+                onChange={handleChange}
+                className={inputClass}
+                placeholder="ABC Suppliers"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-300">
+                Warehouse
+              </label>
+
+              <input
+                name="warehouse"
+                value={form.warehouse}
+                onChange={handleChange}
+                className={inputClass}
+                placeholder="Main Warehouse"
               />
             </div>
 
           </div>
 
-          <div className="flex justify-end gap-3 pt-4">
+          <div className="flex justify-end gap-4 border-t border-slate-800 pt-6">
 
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border px-5 py-2.5"
+              className="rounded-xl border border-slate-700 px-6 py-3 text-slate-300 transition hover:bg-slate-800"
             >
               Cancel
             </button>
@@ -211,9 +243,9 @@ export default function AddInventoryModal({
             <button
               type="submit"
               disabled={saving}
-              className="rounded-lg bg-blue-600 px-6 py-2.5 text-white hover:bg-blue-700 disabled:opacity-50"
+              className="rounded-xl bg-emerald-600 px-8 py-3 font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-50"
             >
-              {saving ? "Saving..." : "Add Item"}
+              {saving ? "Saving..." : "Save Product"}
             </button>
 
           </div>

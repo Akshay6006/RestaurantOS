@@ -88,10 +88,10 @@ export default function Features() {
                   {feature.description}
                 </p>
 
-                <button className="mt-8 flex items-center gap-2 font-semibold text-white opacity-0 transition-all duration-300 group-hover:opacity-100">
+                {/* <button className="mt-8 flex items-center gap-2 font-semibold text-white opacity-0 transition-all duration-300 group-hover:opacity-100">
                   Learn More
                   <ArrowRight size={18} />
-                </button>
+                </button> */}
 
                 <div
                   className={`absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gradient-to-r ${feature.color} opacity-10 blur-3xl transition-all duration-500 group-hover:opacity-20`}

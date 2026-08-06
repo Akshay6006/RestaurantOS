@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { generateDashboardReport } from "@/services/dashboard";
 import {
-  DollarSign,
+  IndianRupee,
   ShoppingCart,
   Users,
   Star,
+  UserCheck,
+  UserMinus,
+  CalendarClock,
 } from "lucide-react";
-
+import RestaurantAI from "@/components/dashboard/RestaurantAI";
 import StatCard from "@/components/dashboard/StatCard";
 import RevenueChart from "@/components/dashboard/RevenueChart";
 import OrdersChart from "@/components/dashboard/OrdersChart";
@@ -15,7 +19,7 @@ import TopSelling from "@/components/dashboard/TopSelling";
 import KitchenQueue from "@/components/dashboard/KitchenQueue";
 import RecentOrders from "@/components/dashboard/RecentOrders";
 import RecentFeedback from "@/components/dashboard/RecentFeedback";
-import AIInsights from "@/components/dashboard/AIInsights";
+// import DashboardAIInsights from "@/components/dashboard/DashboardAIInsights";
 
 import { getDashboardStats } from "@/services/dashboard";
 
@@ -25,23 +29,96 @@ const initialDashboard = {
   totalCustomers: 0,
   averageRating: 0,
 
+  totalEmployees: 0,
+  presentToday: 0,
+  absentToday: 0,
+  leaveToday: 0,
+  pendingLeaveRequests: 0,
+
   pendingOrders: 0,
   preparingOrders: 0,
   readyOrders: 0,
   servedOrders: 0,
 
   revenueChart: [],
-  orderTypes: [],
-  topSelling: [],
-  kitchenQueue: [],
-  recentOrders: [],
-  recentFeedback: [],
+  orderTypes: [] as {
+  name: string;
+  value: number;
+}[],
+topSelling: [] as any[],
+kitchenQueue: [] as any[],
+recentOrders: [] as any[],
+recentFeedback: [] as any[],
+
+  aiInsights: {
+    revenue: 0,
+    expenses: 0,
+    profit: 0,
+    profitMargin: 0,
+    averageOrderValue: 0,
+  } as {
+    revenue: number;
+    expenses: number;
+    profit: number;
+    profitMargin: number;
+    averageOrderValue: number;
+  },
+
+  inventoryInsights: {
+    healthyStock: 0,
+    lowStock: [],
+    outOfStock: [],
+    purchaseRecommendations: [],
+  } as {
+    healthyStock: number;
+    lowStock: any[];
+    outOfStock: any[];
+    purchaseRecommendations: any[];
+  },
+
+  recommendations: [] as {
+    type: string;
+    title: string;
+    message: string;
+  }[],
+
+  dailySummary: {
+  revenue: 0,
+  expenses: 0,
+  profit: 0,
+  totalOrders: 0,
+  bestSeller: "",
+  lowStock: 0,
+  outOfStock: 0,
+  healthScore: 0,
+},
 };
 
 export default function DashboardPage() {
   const [dashboard, setDashboard] = useState(initialDashboard);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const generateReport = async () => {
+    try {
+      const blob = await generateDashboardReport();
+
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "Restaurant_Report.pdf";
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to generate report");
+    }
+  };
 
   useEffect(() => {
     fetchDashboard();
@@ -100,10 +177,10 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 p-8">
+    <main className="min-h-screen bg-slate-950 p-4 md:p-6 lg:p-8">
       <div className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-center">
         <div>
-          <h1 className="text-4xl font-bold text-white">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white">
             Restaurant Dashboard
           </h1>
 
@@ -112,19 +189,24 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <button className="rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white hover:bg-emerald-700">
-          Generate Report
-        </button>
+        <button
+  onClick={generateReport}
+  className="w-full md:w-auto rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white hover:bg-emerald-700"
+>
+  Generate Report
+</button>
       </div>
 
-      <div className="mb-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <div className="mb-8 grid gap-6 grid-cols-1
+sm:grid-cols-2
+xl:grid-cols-4">
         <StatCard
-          title="Revenue"
-          value={`$${dashboard.totalRevenue}`}
-          icon={DollarSign}
-          color="bg-emerald-600"
-          change=""
-        />
+  title="Revenue"
+  value={`₹${Number(dashboard.totalRevenue).toLocaleString("en-IN")}`}
+  icon={IndianRupee}
+  color="bg-emerald-600"
+  change=""
+/>
 
         <StatCard
           title="Orders"
@@ -150,6 +232,41 @@ export default function DashboardPage() {
           change=""
         />
       </div>
+      <div className="mb-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+
+  <StatCard
+    title="Employees"
+    value={dashboard.totalEmployees}
+    icon={Users}
+    color="bg-indigo-600"
+    change=""
+  />
+
+  <StatCard
+    title="Present Today"
+    value={dashboard.presentToday}
+    icon={UserCheck}
+    color="bg-green-600"
+    change=""
+  />
+
+  <StatCard
+    title="Absent Today"
+    value={dashboard.absentToday}
+    icon={UserMinus}
+    color="bg-red-600"
+    change=""
+  />
+
+  <StatCard
+    title="Pending Leaves"
+    value={dashboard.pendingLeaveRequests}
+    icon={CalendarClock}
+    color="bg-yellow-500"
+    change=""
+  />
+
+</div>
 
       <div className="mb-8 grid gap-6 lg:grid-cols-2">
         <RevenueChart data={dashboard.revenueChart} />
@@ -166,7 +283,11 @@ export default function DashboardPage() {
         <RecentFeedback data={dashboard.recentFeedback} />
       </div>
 
-      <AIInsights />
+      <RestaurantAI
+  inventory={dashboard.inventoryInsights}
+  recommendations={dashboard.recommendations}
+  summary={dashboard.dailySummary}
+/>
     </main>
   );
 }

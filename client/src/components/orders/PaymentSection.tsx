@@ -68,7 +68,10 @@ export default function PaymentSection({
           </p>
 
           <p className="mt-4 text-2xl font-bold text-emerald-400">
-            ${total.toFixed(2)}
+            ₹{total.toLocaleString("en-IN", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})}
           </p>
 
         </div>
@@ -97,9 +100,12 @@ export default function PaymentSection({
               restaurant@upi
             </p>
 
-            <p className="mt-2 text-3xl font-bold text-emerald-400">
-              ${total.toFixed(2)}
-            </p>
+           <p className="mt-2 text-3xl font-bold text-emerald-400">
+  ₹{total.toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}
+</p>
 
           </div>
 
@@ -136,8 +142,11 @@ export default function PaymentSection({
           </div>
 
           <p className="mt-5 text-center text-3xl font-bold text-emerald-400">
-            ${total.toFixed(2)}
-          </p>
+  ₹{total.toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}
+</p>
 
         </div>
 

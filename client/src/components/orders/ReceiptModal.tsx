@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { CheckCircle2, Printer, Download, X } from "lucide-react";
 
 interface OrderItem {
@@ -40,9 +41,22 @@ export default function ReceiptModal({
     window.print();
   };
 
+  useEffect(() => {
+  if (open) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
+
+  return () => {
+    document.body.style.overflow = "";
+  };
+}, [open]);
+
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="w-full max-w-2xl rounded-3xl bg-slate-950 p-8">
+<div className="fixed inset-0 z-[9999] overflow-y-auto bg-black/70 backdrop-blur-sm">
+  <div className="min-h-screen flex justify-center py-10 px-6">
+    <div className="w-full max-w-2xl rounded-3xl bg-slate-950 p-8">
 
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -134,24 +148,51 @@ export default function ReceiptModal({
                 <tr key={index} className="border-b border-slate-800">
                   <td className="py-3">{item.menu.name}</td>
                   <td>{item.quantity}</td>
-                  <td>${item.price.toFixed(2)}</td>
+                  <td>₹{item.price.toFixed(2)}</td>
                   <td>
-                    ${(item.price * item.quantity).toFixed(2)}
+                    ₹{(item.price * item.quantity).toFixed(2)}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
 
-          <div className="mt-6 flex justify-between border-t border-slate-700 pt-5">
-            <span className="text-xl font-semibold text-white">
-              Grand Total
-            </span>
+          <div className="mt-6 border-t border-slate-700 pt-5 space-y-3">
 
-            <span className="text-3xl font-bold text-emerald-400">
-              ${order.totalAmount.toFixed(2)}
-            </span>
-          </div>
+  <div className="flex justify-between text-slate-300">
+    <span>Subtotal</span>
+    <span>
+      ₹{order.totalAmount.toFixed(2)}
+    </span>
+  </div>
+
+  <div className="flex justify-between text-slate-300">
+    <span>Discount</span>
+    <span>
+      Included
+    </span>
+  </div>
+
+  <div className="flex justify-between text-slate-300">
+    <span>GST</span>
+    <span>
+      Included
+    </span>
+  </div>
+
+  <div className="flex justify-between border-t border-slate-700 pt-4">
+
+    <span className="text-xl font-bold text-white">
+      Grand Total
+    </span>
+
+    <span className="text-3xl font-bold text-emerald-400">
+      ₹{order.totalAmount.toFixed(2)}
+    </span>
+
+  </div>
+
+</div>
 
         </div>
 
@@ -182,6 +223,7 @@ export default function ReceiptModal({
         </div>
 
       </div>
+    </div>
     </div>
   );
 }

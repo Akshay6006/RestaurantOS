@@ -11,17 +11,18 @@ import {
 
 import { motion } from "framer-motion";
 
-const revenueData = [
-  { day: "Mon", revenue: 420 },
-  { day: "Tue", revenue: 610 },
-  { day: "Wed", revenue: 520 },
-  { day: "Thu", revenue: 890 },
-  { day: "Fri", revenue: 1100 },
-  { day: "Sat", revenue: 1650 },
-  { day: "Sun", revenue: 1320 },
-];
+interface RevenueData {
+  day: string;
+  revenue: number;
+}
 
-export default function RevenueChart() {
+interface RevenueChartProps {
+  data: RevenueData[];
+}
+
+export default function RevenueChart({
+  data,
+}: RevenueChartProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 25 }}
@@ -53,8 +54,7 @@ export default function RevenueChart() {
 
         <ResponsiveContainer width="100%" height="100%">
 
-          <AreaChart data={revenueData}>
-
+<AreaChart data={data}>
             <defs>
               <linearGradient
                 id="revenueGradient"

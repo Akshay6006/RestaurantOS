@@ -10,20 +10,14 @@ import {
   Legend,
 } from "recharts";
 
-const orderData = [
-  {
-    name: "Dine In",
-    value: 48,
-  },
-  {
-    name: "Take Away",
-    value: 27,
-  },
-  {
-    name: "Delivery",
-    value: 25,
-  },
-];
+interface OrderType {
+  name: string;
+  value: number;
+}
+
+interface OrdersChartProps {
+  data: OrderType[];
+}
 
 const COLORS = [
   "#10b981",
@@ -31,7 +25,9 @@ const COLORS = [
   "#f59e0b",
 ];
 
-export default function OrdersChart() {
+export default function OrdersChart({
+  data,
+}: OrdersChartProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 25 }}
@@ -66,7 +62,7 @@ export default function OrdersChart() {
           <PieChart>
 
             <Pie
-              data={orderData}
+              data={data}
               cx="50%"
               cy="50%"
               innerRadius={70}
@@ -74,7 +70,7 @@ export default function OrdersChart() {
               paddingAngle={4}
               dataKey="value"
             >
-              {orderData.map((entry, index) => (
+              {data.map((entry, index) => (
                 <Cell
                   key={entry.name}
                   fill={COLORS[index % COLORS.length]}

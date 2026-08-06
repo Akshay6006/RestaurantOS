@@ -124,9 +124,12 @@ export default function OrdersTable({
                 {order.items.length}
               </td>
 
-              <td className="px-6 py-5 font-semibold text-emerald-400">
-                ${order.totalAmount.toFixed(2)}
-              </td>
+             <td className="text-emerald-400 font-bold">
+  ₹{Number(order.totalAmount).toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}
+</td>
 
               <td className="px-6 py-5">
 

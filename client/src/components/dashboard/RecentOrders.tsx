@@ -3,48 +3,17 @@
 import { motion } from "framer-motion";
 import { ReceiptText } from "lucide-react";
 
-const orders = [
-  {
-    id: "INV-240701",
-    customer: "Rahul Sharma",
-    table: "Table 2",
-    amount: 580,
-    payment: "Paid",
-    status: "Completed",
-  },
-  {
-    id: "INV-240702",
-    customer: "Priya Singh",
-    table: "Table 6",
-    amount: 920,
-    payment: "Paid",
-    status: "Preparing",
-  },
-  {
-    id: "INV-240703",
-    customer: "Amit Kumar",
-    table: "Take Away",
-    amount: 430,
-    payment: "Pending",
-    status: "Cooking",
-  },
-  {
-    id: "INV-240704",
-    customer: "Neha Patel",
-    table: "Table 4",
-    amount: 1180,
-    payment: "Paid",
-    status: "Ready",
-  },
-  {
-    id: "INV-240705",
-    customer: "Rohit Verma",
-    table: "Delivery",
-    amount: 760,
-    payment: "Pending",
-    status: "Pending",
-  },
-];
+interface RecentOrder {
+  id: string;
+  customerName: string;
+  tableNumber: number;
+  totalAmount: number;
+  status: string;
+}
+
+interface RecentOrdersProps {
+  data: RecentOrder[];
+}
 
 const paymentColor = (payment: string) => {
   return payment === "Paid"
@@ -71,7 +40,10 @@ const statusColor = (status: string) => {
   }
 };
 
-export default function RecentOrders() {
+export default function RecentOrders({
+  data,
+}: RecentOrdersProps) {
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 25 }}
@@ -109,7 +81,7 @@ export default function RecentOrders() {
           </thead>
 
           <tbody>
-            {orders.map((order) => (
+            {data.map((order) => (
               <tr
                 key={order.id}
                 className="border-b border-slate-800 hover:bg-slate-800/40 transition"
@@ -119,18 +91,18 @@ export default function RecentOrders() {
                 </td>
 
                 <td className="text-slate-300">
-                  {order.customer}
+                  {order.customerName}
                 </td>
 
                 <td className="text-slate-300">
-                  {order.table}
+                  {order.tableNumber}
                 </td>
 
                 <td className="text-right font-semibold text-emerald-400">
-                  ${order.amount}
+                ₹{order.totalAmount.toLocaleString("en-IN")}
                 </td>
 
-                <td className="text-center">
+                {/* <td className="text-center">
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-semibold ${paymentColor(
                       order.payment
@@ -138,7 +110,7 @@ export default function RecentOrders() {
                   >
                     {order.payment}
                   </span>
-                </td>
+                </td> */}
 
                 <td className="text-center">
                   <span

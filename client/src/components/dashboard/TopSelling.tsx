@@ -3,40 +3,20 @@
 import { motion } from "framer-motion";
 import { Flame } from "lucide-react";
 
-const dishes = [
-  {
-    id: 1,
-    name: "Chicken Biryani",
-    sold: 126,
-    revenue: 1890,
-  },
-  {
-    id: 2,
-    name: "Paneer Butter Masala",
-    sold: 98,
-    revenue: 1274,
-  },
-  {
-    id: 3,
-    name: "Veg Fried Rice",
-    sold: 83,
-    revenue: 996,
-  },
-  {
-    id: 4,
-    name: "Butter Naan",
-    sold: 180,
-    revenue: 720,
-  },
-  {
-    id: 5,
-    name: "Chicken Momos",
-    sold: 72,
-    revenue: 864,
-  },
-];
+interface TopSellingItem {
+  id: string;
+  name: string;
+  sold: number;
+  revenue: number;
+}
 
-export default function TopSelling() {
+interface TopSellingProps {
+  data: TopSellingItem[];
+}
+
+export default function TopSelling({
+  data,
+}: TopSellingProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 25 }}
@@ -84,7 +64,7 @@ export default function TopSelling() {
 
           <tbody>
 
-            {dishes.map((dish, index) => (
+            {data.map((dish, index) => (
               <tr
                 key={dish.id}
                 className="border-b border-slate-800 hover:bg-slate-800/40 transition"
@@ -110,8 +90,8 @@ export default function TopSelling() {
                 </td>
 
                 <td className="text-right font-bold text-emerald-400">
-                  ${dish.revenue.toLocaleString()}
-                </td>
+  {dish.sold} Plates
+</td>
 
               </tr>
             ))}

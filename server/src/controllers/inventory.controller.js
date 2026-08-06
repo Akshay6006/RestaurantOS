@@ -1,8 +1,8 @@
 import prisma from "../prisma/prisma.js";
+import fs from "fs";
+import { extractInvoiceItems } from "../services/gemini.service.js";
 
-// ==========================
-// Create Inventory
-// ==========================
+
 export const createInventory = async (req, res) => {
   try {
     const {
@@ -263,6 +263,50 @@ export const stockOut = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
+    });
+  }
+};
+
+// ==========================
+// AI Invoice Extraction
+// ==========================
+
+export const extractInventoryInvoice = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Invoice is required.",
+      });
+    }
+
+    const fileBuffer = fs.readFileSync(req.file.path);
+
+    const base64Data = fileBuffer.toString("base64");
+
+    const result = await extractInvoiceItems(
+      base64Data,
+      req.file.mimetype
+    );
+
+    const cleaned = result
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+
+    const items = JSON.parse(cleaned);
+
+    return res.json({
+      success: true,
+      items,
+    });
+  } catch (error) {
+    console.error("========== INVENTORY AI ERROR ==========");
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 };

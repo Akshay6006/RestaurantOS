@@ -16,6 +16,7 @@ import InventoryTable from "./InventoryTable";
 import AddInventoryModal from "./AddInventoryModal";
 import EditInventoryModal from "./EditInventoryModal";
 import DeleteInventoryDialog from "./DeleteInventoryDialog";
+import AIImportInventoryDialog from "./AIImportInventoryDialog";
 
 export default function InventoryManagement() {
   const [inventory, setInventory] = useState<Inventory[]>([]);
@@ -26,16 +27,21 @@ export default function InventoryManagement() {
 
   const [showAdd, setShowAdd] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [showAIImport, setShowAIImport] = useState(false);
 
-  const [selectedItem, setSelectedItem] = useState<Inventory | null>(null);
+  const [selectedItem, setSelectedItem] =
+    useState<Inventory | null>(null);
 
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [deleteItem, setDeleteItem] = useState<Inventory | null>(null);
+  const [deleteItem, setDeleteItem] =
+    useState<Inventory | null>(null);
 
   const fetchInventory = async () => {
     try {
       setLoading(true);
+
       const data = await getInventory();
+
       setInventory(data);
     } finally {
       setLoading(false);
@@ -49,11 +55,16 @@ export default function InventoryManagement() {
   const filteredInventory = useMemo(() => {
     return inventory.filter((item) => {
       const matchesSearch =
-        item.name.toLowerCase().includes(search.toLowerCase()) ||
-        item.category.toLowerCase().includes(search.toLowerCase());
+        item.name
+          .toLowerCase()
+          .includes(search.toLowerCase()) ||
+        item.category
+          .toLowerCase()
+          .includes(search.toLowerCase());
 
       const matchesCategory =
-        category === "All" || item.category === category;
+        category === "All" ||
+        item.category === category;
 
       return matchesSearch && matchesCategory;
     });
@@ -61,21 +72,33 @@ export default function InventoryManagement() {
 
   const categories = [
     "All",
-    ...new Set(inventory.map((item) => item.category)),
+    ...new Set(
+      inventory.map((item) => item.category)
+    ),
   ];
 
-  const handleCreate = async (data: InventoryFormData) => {
+  const handleCreate = async (
+    data: InventoryFormData
+  ) => {
     await createInventory(data);
+
     setShowAdd(false);
+
     fetchInventory();
   };
 
-  const handleUpdate = async (data: InventoryFormData) => {
+  const handleUpdate = async (
+    data: InventoryFormData
+  ) => {
     if (!selectedItem) return;
 
-    await updateInventory(selectedItem.id, data);
+    await updateInventory(
+      selectedItem.id,
+      data
+    );
 
     setShowEdit(false);
+
     setSelectedItem(null);
 
     fetchInventory();
@@ -87,6 +110,7 @@ export default function InventoryManagement() {
     await deleteInventory(deleteItem.id);
 
     setDeleteOpen(false);
+
     setDeleteItem(null);
 
     fetchInventory();
@@ -97,7 +121,8 @@ export default function InventoryManagement() {
   const lowStock = inventory.filter(
     (item) =>
       item.quantity > 0 &&
-      item.quantity <= item.lowStockThreshold
+      item.quantity <=
+        item.lowStockThreshold
   ).length;
 
   const outOfStock = inventory.filter(
@@ -105,32 +130,52 @@ export default function InventoryManagement() {
   ).length;
 
   const totalValue = inventory.reduce(
-    (sum, item) => sum + item.purchasePrice * item.quantity,
+    (sum, item) =>
+      sum +
+      item.purchasePrice * item.quantity,
     0
   );
 
   return (
     <div className="space-y-6">
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-4">
 
-        <div className="rounded-xl bg-white shadow p-6">
-          <p className="text-gray-500 text-sm">Products</p>
-          <h2 className="text-3xl font-bold">{totalProducts}</h2>
+        <div className="rounded-xl bg-white p-6 shadow">
+          <p className="text-sm text-gray-500">
+            Products
+          </p>
+
+          <h2 className="text-3xl font-bold">
+            {totalProducts}
+          </h2>
         </div>
 
-        <div className="rounded-xl bg-yellow-50 shadow p-6">
-          <p className="text-gray-500 text-sm">Low Stock</p>
-          <h2 className="text-3xl font-bold text-yellow-600">{lowStock}</h2>
+        <div className="rounded-xl bg-yellow-50 p-6 shadow">
+          <p className="text-sm text-gray-500">
+            Low Stock
+          </p>
+
+          <h2 className="text-3xl font-bold text-yellow-600">
+            {lowStock}
+          </h2>
         </div>
 
-        <div className="rounded-xl bg-red-50 shadow p-6">
-          <p className="text-gray-500 text-sm">Out of Stock</p>
-          <h2 className="text-3xl font-bold text-red-600">{outOfStock}</h2>
+        <div className="rounded-xl bg-red-50 p-6 shadow">
+          <p className="text-sm text-gray-500">
+            Out of Stock
+          </p>
+
+          <h2 className="text-3xl font-bold text-red-600">
+            {outOfStock}
+          </h2>
         </div>
 
-        <div className="rounded-xl bg-green-50 shadow p-6">
-          <p className="text-gray-500 text-sm">Inventory Value</p>
+        <div className="rounded-xl bg-green-50 p-6 shadow">
+          <p className="text-sm text-gray-500">
+            Inventory Value
+          </p>
+
           <h2 className="text-3xl font-bold text-green-600">
             ₹{totalValue.toFixed(2)}
           </h2>
@@ -145,6 +190,9 @@ export default function InventoryManagement() {
         setCategory={setCategory}
         categories={categories}
         onAdd={() => setShowAdd(true)}
+        onAIImport={() =>
+          setShowAIImport(true)
+        }
       />
 
       <InventoryTable
@@ -152,17 +200,21 @@ export default function InventoryManagement() {
         inventory={filteredInventory}
         onEdit={(item) => {
           setSelectedItem(item);
+
           setShowEdit(true);
         }}
         onDelete={(item) => {
           setDeleteItem(item);
+
           setDeleteOpen(true);
         }}
       />
 
       <AddInventoryModal
         open={showAdd}
-        onClose={() => setShowAdd(false)}
+        onClose={() =>
+          setShowAdd(false)
+        }
         onSubmit={handleCreate}
       />
 
@@ -172,6 +224,7 @@ export default function InventoryManagement() {
           item={selectedItem}
           onClose={() => {
             setShowEdit(false);
+
             setSelectedItem(null);
           }}
           onSubmit={handleUpdate}
@@ -183,9 +236,18 @@ export default function InventoryManagement() {
         itemName={deleteItem?.name || ""}
         onClose={() => {
           setDeleteOpen(false);
+
           setDeleteItem(null);
         }}
         onConfirm={confirmDelete}
+      />
+
+      <AIImportInventoryDialog
+        open={showAIImport}
+        onClose={() =>
+          setShowAIImport(false)
+        }
+        onSuccess={fetchInventory}
       />
 
     </div>

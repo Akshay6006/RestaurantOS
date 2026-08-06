@@ -10,6 +10,11 @@ import dashboardRoutes from "./routes/dashboard.routes.js";;
 import feedbackRoutes from "./routes/feedback.routes.js";
 import inventoryRoutes from "./routes/inventory.routes.js";
 import invoiceRoutes from "./routes/invoice.routes.js";
+import expenseRoutes from "./routes/expense.routes.js";
+import staffRoutes from "./routes/staff.routes.js";
+import attendanceRoutes from "./routes/attendance.routes.js";
+import leaveRoutes from "./routes/leave.routes.js";
+import aiRoutes from "./routes/ai.routes.js";
 
 dotenv.config();
 
@@ -27,6 +32,11 @@ app.use("/api/feedback", feedbackRoutes);
 app.use("/api/inventory", inventoryRoutes);
 app.use("/api/invoice", invoiceRoutes);
 app.use("/uploads", express.static("uploads"));
+app.use("/api/expenses", expenseRoutes);
+app.use("/api/staff", staffRoutes);
+app.use("/api/attendance", attendanceRoutes);
+app.use("/api/leaves", leaveRoutes);
+app.use("/api/ai", aiRoutes);
 
 app.get("/", (req, res) => {
   res.json({

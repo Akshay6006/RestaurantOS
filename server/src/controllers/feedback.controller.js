@@ -80,13 +80,23 @@ export const createFeedback = async (req, res) => {
 // ==============================
 export const getFeedbacks = async (req, res) => {
   try {
+    const dashboard = req.query.dashboard === "true";
+
     const feedbacks = await prisma.feedback.findMany({
+      where: dashboard
+        ? {
+            rating: {
+              gte: 3,
+            },
+          }
+        : {},
       include: {
         order: true,
       },
       orderBy: {
         createdAt: "desc",
       },
+      take: dashboard ? 5 : undefined,
     });
 
     return res.json({

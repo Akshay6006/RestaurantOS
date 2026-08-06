@@ -70,20 +70,23 @@ export default function OrderItems({
                 </label>
 
                 <select
-                  value={item.menuId}
-                  onChange={(e) =>
-                    updateItem(index, "menuId", e.target.value)
-                  }
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-white outline-none focus:border-emerald-500"
-                >
-                  <option value="">Select Dish</option>
+  value={item.menuId}
+  onChange={(e) =>
+    updateItem(index, "menuId", e.target.value)
+  }
+  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-white outline-none focus:border-emerald-500"
+>
+  <option value="">Select Dish</option>
 
-                  {menus.map((menu) => (
-                    <option key={menu.id} value={menu.id}>
-                      {menu.name} (${menu.price})
-                    </option>
-                  ))}
-                </select>
+  {menus.map((menu) => (
+    <option key={menu.id} value={menu.id}>
+      {menu.name} (₹{menu.price.toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })})
+    </option>
+  ))}
+</select>
               </div>
 
               {/* Quantity */}
@@ -114,7 +117,10 @@ export default function OrderItems({
                 </label>
 
                 <div className="rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-center font-semibold text-emerald-400">
-                  ${price.toFixed(2)}
+                  ₹{price.toLocaleString("en-IN", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})}
                 </div>
               </div>
 
@@ -125,7 +131,10 @@ export default function OrderItems({
                 </label>
 
                 <div className="rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-center font-bold text-white">
-                  ${total.toFixed(2)}
+                  ₹{total.toLocaleString("en-IN", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})}
                 </div>
               </div>
 

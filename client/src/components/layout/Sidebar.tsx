@@ -9,6 +9,7 @@ import {
   Wallet,
   Users,
   BrainCircuit,
+  MessageSquare,
 } from "lucide-react";
 
 const menuItems = [
@@ -43,9 +44,14 @@ const menuItems = [
     href: "/dashboard/staff",
   },
   {
+  title: "Feedback",
+  icon: MessageSquare,
+  href: "/dashboard/feedback",
+},
+  {
     title: "AI Insights",
     icon: BrainCircuit,
-    href: "/dashboard/ai",
+    href: "/dashboard/ai-insights",
   },
 ];
 

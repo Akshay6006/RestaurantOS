@@ -261,12 +261,10 @@ const [showFeedback, setShowFeedback] = useState(false);
           />
 
           <BillSummary
-            subtotal={subtotal}
-            gst={gst}
-            setGst={setGst}
-            discount={discount}
-            setDiscount={setDiscount}
-          />
+  subtotal={subtotal}
+  discount={discount}
+  setDiscount={setDiscount}
+/>
 
           <PaymentSection
             paymentMethod={paymentMethod}
@@ -317,13 +315,29 @@ const [showFeedback, setShowFeedback] = useState(false);
     onClose();
   }}
   onSubmit={async (data) => {
-    await createFeedback(data);
+  try {
+    console.log("Submitting Feedback:", data);
+
+    const response = await createFeedback(data);
+
+    console.log("Feedback Response:", response);
+
+    alert("Feedback submitted successfully!");
 
     setShowFeedback(false);
     resetForm();
     refreshOrders();
     onClose();
-  }}
+  } catch (error: any) {
+    console.error("Feedback Error:", error);
+
+    alert(
+      error.response?.data?.message ||
+      error.message ||
+      "Feedback submission failed."
+    );
+  }
+}}
 />
 </>
   );

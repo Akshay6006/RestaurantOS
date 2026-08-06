@@ -110,8 +110,8 @@ export default function MenuTable({
               </td>
 
               <td className="px-6 py-4 font-semibold text-emerald-400">
-                ${menu.price}
-              </td>
+  ₹{Number(menu.price).toLocaleString("en-IN")}
+</td>
 
               <td className="px-6 py-4">
                 <span
