@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import axios from "axios";
+import api from "@/lib/axios";
 import { motion } from "framer-motion";
 import { Mail } from "lucide-react";
 
@@ -78,10 +78,7 @@ export default function LoginForm() {
     try {
       setLoading(true);
 
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        form
-      );
+      const res = await api.post("/auth/login", form);
 
       login(
         res.data.token,

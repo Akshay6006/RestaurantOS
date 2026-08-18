@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import axios from "axios";
+import api from "@/lib/axios";
 import { Mail } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -18,10 +18,10 @@ export default function ForgotPasswordForm() {
     try {
       setLoading(true);
 
-      await axios.post(
-        "http://localhost:5000/api/auth/forgot-password",
-        { email }
-      );
+await api.post(
+  "/auth/forgot-password",
+  { email }
+);
 
       alert(
         "Password reset link sent to your email."

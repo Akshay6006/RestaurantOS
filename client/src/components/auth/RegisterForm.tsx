@@ -4,8 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Mail, User } from "lucide-react";
 import { motion } from "framer-motion";
-import axios from "axios";
-
+import api from "@/lib/axios";
 import PasswordInput from "./PasswordInput";
 import PasswordStrength from "./PasswordStrength";
 
@@ -97,15 +96,12 @@ export default function RegisterForm() {
     try {
       setLoading(true);
 
-      await axios.post(
-        "http://localhost:5000/api/auth/register",
-        {
-          name: form.name,
-          email: form.email,
-          password: form.password,
-          role: form.role,
-        }
-      );
+      await api.post("/auth/register", {
+  name: form.name,
+  email: form.email,
+  password: form.password,
+  role: form.role,
+});
 
       router.push("/login");
     } catch (err: any) {
